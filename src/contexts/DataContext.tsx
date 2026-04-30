@@ -13,21 +13,21 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState(() => {
-    const saved = localStorage.getItem('courses_v2');
+    const saved = localStorage.getItem('courses_v5');
     return saved ? JSON.parse(saved) : initialCourses;
   });
 
   const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem('products_v2');
+    const saved = localStorage.getItem('products_v5');
     return saved ? JSON.parse(saved) : initialProducts;
   });
 
   useEffect(() => {
-    localStorage.setItem('courses_v2', JSON.stringify(courses));
+    localStorage.setItem('courses_v5', JSON.stringify(courses));
   }, [courses]);
 
   useEffect(() => {
-    localStorage.setItem('products_v2', JSON.stringify(products));
+    localStorage.setItem('products_v5', JSON.stringify(products));
   }, [products]);
 
   return (

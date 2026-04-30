@@ -12,7 +12,8 @@ import {
   Clock,
   User,
   Star,
-  Download as DownloadIcon
+  Download as DownloadIcon,
+  ExternalLink
 } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { UserRole } from '../types';
@@ -42,11 +43,25 @@ const CourseDetailPage = ({ role }: { role: UserRole }) => {
         <div className="lg:col-span-2 space-y-8">
           <div className="aspect-video bg-ink rounded-3xl overflow-hidden shadow-2xl relative group">
             {selectedLesson ? (
-              <video 
-                src={selectedLesson.videoUrl} 
-                controls 
-                className="w-full h-full object-contain"
-              />
+              selectedLesson.videoUrl?.includes('youtube.com') || selectedLesson.videoUrl?.includes('youtu.be') ? (
+                <iframe
+                  src={selectedLesson.videoUrl.replace('watch?v=', 'embed/').split('&')[0]}
+                  title={selectedLesson.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : selectedLesson.videoUrl ? (
+                <video 
+                  src={selectedLesson.videoUrl} 
+                  controls 
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-ink/5">
+                  <p className="text-ink/60 font-serif italic">本节暂无视频资源</p>
+                </div>
+              )
             ) : (
               <img 
                 src={course.thumbnail} 
@@ -95,7 +110,7 @@ const CourseDetailPage = ({ role }: { role: UserRole }) => {
                     key={lesson.id}
                     onClick={() => setSelectedLesson(lesson)}
                     className={cn(
-                      "w-full flex items-center justify-between p-6 rounded-2xl border transition-all text-left",
+                      "w-full flex items-center justify-between p-6 rounded-2xl border transition-all text-left group",
                       selectedLesson?.id === lesson.id 
                         ? "bg-border-light/50 border-sage/20" 
                         : "bg-white border-border-light hover:border-sage/30 shadow-sm"
@@ -117,11 +132,39 @@ const CourseDetailPage = ({ role }: { role: UserRole }) => {
                       </div>
                     </div>
                     {selectedLesson?.id === lesson.id ? (
-                      <div className="w-8 h-8 rounded-full bg-sage/10 flex items-center justify-center text-sage">
-                        <Play className="w-4 h-4 fill-current ml-0.5" />
+                      <div className="flex items-center gap-2">
+                        {lesson.videoUrl && (
+                          <a 
+                            href={lesson.videoUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="w-8 h-8 rounded-full border border-border-light flex items-center justify-center text-ink/40 hover:bg-ink hover:text-white transition-all shadow-sm"
+                            onClick={(e) => e.stopPropagation()}
+                            title="在新标页中打开"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        <div className="w-8 h-8 rounded-full bg-sage/10 flex items-center justify-center text-sage">
+                          <Play className="w-4 h-4 fill-current ml-0.5" />
+                        </div>
                       </div>
                     ) : (
-                      <ChevronRight className="w-5 h-5 text-ink/20" />
+                      <div className="flex items-center gap-2">
+                        {lesson.videoUrl && (
+                          <a 
+                            href={lesson.videoUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="w-8 h-8 rounded-full border border-border-light flex items-center justify-center text-ink/40 hover:bg-ink hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                            onClick={(e) => e.stopPropagation()}
+                            title="在新标页中打开"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        <ChevronRight className="w-5 h-5 text-ink/20" />
+                      </div>
                     )}
                   </button>
                 ))}
