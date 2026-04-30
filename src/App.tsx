@@ -166,8 +166,7 @@ export default function App() {
             </div>
             <div>
               <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">联系我们</h4>
-              <p className="text-white/60 text-sm mb-4">上海市静安区</p>
-              <p className="text-white/60 text-sm">contact@sharon.center</p>
+              <p className="text-white/60 text-sm">sharon153.cn@gmail.com</p>
             </div>
           </div>
           <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-white/40">

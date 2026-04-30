@@ -35,7 +35,7 @@ export const COURSES: Course[] = [
     longDescription: '本课程将带领大家全面回顾旧约三十九卷书，探讨各书卷的背景、主题及其在整本圣经救赎计划中的地位。',
     thumbnail: 'https://images.unsplash.com/photo-1504052434139-aaa9d643878b?q=80&w=800&auto=format&fit=crop',
     price: 350,
-    category: '圣经研究',
+    category: '职场领导力',
     lessons: [
       { id: 'l3', title: '创世记：起初的故事', videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', duration: '18:10' },
     ],

@@ -104,7 +104,7 @@ const CoursesPage = ({ role }: { role: UserRole }) => {
   const { courses, setCourses } = useData();
   const [filter, setFilter] = useState('全部');
   const [editingCourse, setEditingCourse] = useState<any>(null);
-  const categories = ['全部', '核心课题', '圣经研究', '生命成长'];
+  const categories = ['全部', '核心课题', '职场领导力', '生命成长'];
 
   const filteredCourses = filter === '全部' 
     ? courses 
@@ -120,7 +120,7 @@ const CoursesPage = ({ role }: { role: UserRole }) => {
       <header className="flex flex-col gap-8">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="heading-serif text-6xl mb-6 italic">所有神学课程</h1>
+            <h1 className="heading-serif text-6xl mb-6 italic">沙仑所有创意课</h1>
             <p className="text-xl text-ink/60 font-serif italic mb-10">发现为您预备的深度学术与灵性资源。</p>
           </div>
           {role === 'teacher' && (

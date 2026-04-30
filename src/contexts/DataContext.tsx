@@ -13,7 +13,7 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState(() => {
-    const saved = localStorage.getItem('courses_v5');
+    const saved = localStorage.getItem('courses_v6');
     return saved ? JSON.parse(saved) : initialCourses;
   });
 
@@ -23,7 +23,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   useEffect(() => {
-    localStorage.setItem('courses_v5', JSON.stringify(courses));
+    localStorage.setItem('courses_v6', JSON.stringify(courses));
   }, [courses]);
 
   useEffect(() => {
