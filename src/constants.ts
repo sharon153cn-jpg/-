@@ -5,6 +5,8 @@
 
 import { Course, Product } from './types';
 
+
+
 export const COURSES: Course[] = [
   {
     id: 'c1',
@@ -63,7 +65,7 @@ export const COURSES: Course[] = [
     instructor: '牧哥Paulweh',
     description: '深入探讨如何准备与传递充满能力的信息。',
     longDescription: '本课程旨在帮助服事者掌握如何从圣经中提取信息，并以清晰、有力的方式传递给会众，成为神话语忠心的出口。',
-    thumbnail: '/preacher-thumb.jpg',
+    thumbnail: '/preacher-thumbnail.jpg',
     price: 199,
     category: '核心课题',
     lessons: [
