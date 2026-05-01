@@ -7,6 +7,7 @@ import { Course, Product } from './types';
 
 
 
+
 export const COURSES: Course[] = [
   {
     id: 'c1',
