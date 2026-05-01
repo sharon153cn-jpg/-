@@ -6,7 +6,7 @@ import { UserRole } from '../types';
 import { useData } from '../contexts/DataContext';
 import { formatPrice } from '../lib/utils';
 
-const CourseCard = ({ course, role, onEdit }: { course: any, role: UserRole, onEdit: () => void }) => (
+const CourseCard = ({ course, role, onEdit }: { course: any, role: UserRole, onEdit: () => void, key?: React.Key }) => (
   <motion.div
     layout
     initial={{ opacity: 0, y: 20 }}

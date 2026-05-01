@@ -44,7 +44,12 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4 pointer-events-none">
       <div className="max-w-7xl mx-auto flex justify-between items-center bg-white/70 backdrop-blur-md border border-border-light rounded-2xl px-6 py-3 shadow-sm pointer-events-auto">
         <Link to="/" className="flex items-center space-x-3">
-          <img src="/logo.png" alt="沙仑企业创意中心 Logo" className="h-8 w-auto object-contain" />
+          <img 
+            src="/logo.png" 
+            alt="沙仑企业创意中心 Logo" 
+            className="h-8 w-auto object-contain" 
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
           <span className="font-serif text-xl font-medium tracking-tight">沙仑企业创意中心</span>
         </Link>
 
