@@ -65,7 +65,7 @@ export const COURSES: Course[] = [
     instructor: '牧哥Paulweh',
     description: '深入探讨如何准备与传递充满能力的信息。',
     longDescription: '本课程旨在帮助服事者掌握如何从圣经中提取信息，并以清晰、有力的方式传递给会众，成为神话语忠心的出口。',
-    thumbnail: 'https://images.unsplash.com/photo-1577800636881-2c0691500f40?q=80&w=800&auto=format&fit=crop', // 使用此图片作为讲道者的临时占位符，原图 preacher-thumbnail.jpg 可能已损坏或格式不兼容（如 CMYK 色彩模式）
+    thumbnail: '/preacher-thumbnail.jpg',
     price: 199,
     category: '核心课题',
     lessons: [
