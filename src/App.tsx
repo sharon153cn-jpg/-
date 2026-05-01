@@ -23,12 +23,15 @@ import CoursesPage from './pages/CoursesPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import ShopPage from './pages/ShopPage';
 import Dashboard from './pages/Dashboard';
+import { LoginPage } from './pages/LoginPage';
 import { DataProvider } from './contexts/DataContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { cn } from './lib/utils';
 
-const Navbar = ({ role, setRole }: { role: UserRole, setRole: (role: UserRole) => void }) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { session, user, role, setRole, signOut } = useAuth();
 
   const navLinks = [
     { name: '首页', path: '/', icon: <BookOpen className="w-4 h-4" /> },
@@ -62,16 +65,38 @@ const Navbar = ({ role, setRole }: { role: UserRole, setRole: (role: UserRole) =
         </div>
 
         <div className="hidden md:flex items-center space-x-4 border-l border-border-light pl-6 ml-2">
-          <button 
-            onClick={() => setRole(role === 'student' ? 'teacher' : 'student')}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage/10 text-sage text-xs font-semibold hover:bg-sage/20 transition-all border border-sage/20"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            切换至{role === 'student' ? '老师' : '学生'}模式
-          </button>
-          <div className="w-8 h-8 rounded-full bg-clay/20 flex items-center justify-center border border-clay/20">
-            <User className="w-4 h-4 text-clay" />
-          </div>
+          {session ? (
+            <>
+              {/* Optional: You can keep role switching for testing even when logged in if desired, 
+                  but typically roles are fixed. If teachers need to preview student view, we can keep it. */}
+              {user?.user_metadata?.role === 'teacher' && (
+                <button 
+                  onClick={() => setRole(role === 'student' ? 'teacher' : 'student')}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage/10 text-sage text-xs font-semibold hover:bg-sage/20 transition-all border border-sage/20"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  预览{role === 'student' ? '老师' : '学生'}模式
+                </button>
+              )}
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-ink/50">{user.email}</span>
+                <button 
+                  onClick={() => signOut()}
+                  className="text-xs text-ink/60 hover:text-rose-500 font-bold transition-colors"
+                >
+                  退出
+                </button>
+              </div>
+            </>
+          ) : (
+            <Link 
+              to="/login"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-sage text-white text-xs font-bold hover:bg-[#7A8A4B] transition-all shadow-md shadow-sage/20"
+            >
+              <User className="w-3.5 h-3.5" />
+              登录 / 注册
+            </Link>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -102,16 +127,40 @@ const Navbar = ({ role, setRole }: { role: UserRole, setRole: (role: UserRole) =
                 </Link>
               ))}
               <div className="pt-4 border-t border-border-light">
-                <button 
-                  onClick={() => {
-                    setRole(role === 'student' ? 'teacher' : 'student');
-                    setIsOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-sage text-white text-sm font-bold shadow-md"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  切换至{role === 'student' ? '老师' : '学生'}模式
-                </button>
+                {session ? (
+                  <div className="space-y-3">
+                    {user?.user_metadata?.role === 'teacher' && (
+                      <button 
+                        onClick={() => {
+                          setRole(role === 'student' ? 'teacher' : 'student');
+                          setIsOpen(false);
+                        }}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-sage/10 border border-sage/20 text-sage text-sm font-bold"
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                        预览{role === 'student' ? '老师' : '学生'}模式
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => {
+                        signOut();
+                        setIsOpen(false);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-rose-50 text-rose-500 text-sm font-bold"
+                    >
+                      退出登录
+                    </button>
+                  </div>
+                ) : (
+                  <Link 
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-sage text-white text-sm font-bold shadow-md"
+                  >
+                    <User className="w-4 h-4" />
+                    登录 / 注册
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>
@@ -130,55 +179,64 @@ const ScrollToTop = () => {
 };
 
 export default function App() {
-  const [role, setRole] = useState<UserRole>('student');
-
   return (
-    <DataProvider>
+    <AuthProvider>
+      <DataProvider>
       <Router>
         <ScrollToTop />
-        <div className="min-h-screen selection:bg-sage/30">
-          <Navbar role={role} setRole={setRole} />
-          <main className="pt-24 pb-12">
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/courses" element={<CoursesPage role={role} />} />
-              <Route path="/course/:id" element={<CourseDetailPage role={role} />} />
-              <Route path="/shop" element={<ShopPage role={role} />} />
-              <Route path="/dashboard" element={<Dashboard role={role} />} />
-            </Routes>
-          </main>
-
-        <footer className="bg-sage text-white/90 py-16 px-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="font-serif text-3xl mb-6">沙仑企业创意中心</h3>
-              <p className="max-w-md text-white/70 leading-relaxed font-light">
-                让文化卓越。恩赐的价值不在于恩赐的本身，而是在于它在爱中运用所造就的生命。
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">导航</h4>
-              <ul className="space-y-4 text-white/60 text-sm">
-                <li><Link to="/courses">所有课程</Link></li>
-                <li><Link to="/shop">卓越文创</Link></li>
-                <li><Link to="/dashboard">学员入口</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">联系我们</h4>
-              <p className="text-white/60 text-sm">sharon153.cn@gmail.com</p>
-            </div>
-          </div>
-          <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-white/40">
-            <p>© 2026 沙仑企业创意中心 | Sharon Center For Creative Enterprises. 保留所有权利。</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#">隐私政策</a>
-              <a href="#">使用条款</a>
-            </div>
-          </div>
-        </footer>
-      </div>
-    </Router>
-  </DataProvider>
+        <AppRoutes />
+      </Router>
+    </DataProvider>
+  </AuthProvider>
   );
 }
+
+const AppRoutes = () => {
+  const { role } = useAuth();
+  
+  return (
+    <div className="min-h-screen selection:bg-sage/30">
+      <Navbar />
+      <main className="pt-24 pb-12">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/courses" element={<CoursesPage role={role} />} />
+          <Route path="/course/:id" element={<CourseDetailPage role={role} />} />
+          <Route path="/shop" element={<ShopPage role={role} />} />
+          <Route path="/dashboard" element={<Dashboard role={role} />} />
+        </Routes>
+      </main>
+
+      <footer className="bg-sage text-white/90 py-16 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="col-span-1 md:col-span-2">
+            <h3 className="font-serif text-3xl mb-6">沙仑企业创意中心</h3>
+            <p className="max-w-md text-white/70 leading-relaxed font-light">
+              让文化卓越。恩赐的价值不在于恩赐的本身，而是在于它在爱中运用所造就的生命。
+            </p>
+          </div>
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">导航</h4>
+            <ul className="space-y-4 text-white/60 text-sm">
+              <li><Link to="/courses">所有课程</Link></li>
+              <li><Link to="/shop">卓越文创</Link></li>
+              <li><Link to="/dashboard">学员入口</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">联系我们</h4>
+            <p className="text-white/60 text-sm">sharon153.cn@gmail.com</p>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-white/40">
+          <p>© 2026 沙仑企业创意中心 | Sharon Center For Creative Enterprises. 保留所有权利。</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#">隐私政策</a>
+            <a href="#">使用条款</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
