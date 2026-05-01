@@ -39,7 +39,11 @@ export const LoginPage = () => {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication.');
+      let errorMessage = err.message || 'An error occurred during authentication.';
+      if (errorMessage.includes('Invalid API key') || errorMessage.includes('Failed to fetch')) {
+        errorMessage = '连接数据库失败 ⚠️: 系统检测到您当前使用了无效的或默认的 API 密钥。如果要在您自己的域名（如 sharonecc.com）或本系统正常使用登录/注册功能，请在项目左侧或本地的 .env 文件中填入您真实的 Supabase URL 和 Anon Key。';
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
