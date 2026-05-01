@@ -27,13 +27,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Error handling if env variables are not set
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      console.warn('Supabase URL or Anon Key is missing. Auth will not work.');
-      setLoading(false);
-      return;
-    }
-
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);

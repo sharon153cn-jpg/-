@@ -15,10 +15,6 @@ export const LoginPage = () => {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      setError('Please configure Supabase environment variables first.');
-      return;
-    }
     
     setLoading(true);
     setError('');
